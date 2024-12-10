@@ -21,6 +21,15 @@ const userRegister = (req, res) => {
 
 const userLogin = (req, res) => {
   const { email } = req.body;
+
+  const result = validationResult(req);
+
+  if (!result.isEmpty()) {
+    return res.status(400).json({
+      valtidationMessages: result.array().map((err) => ({ message: err.msg })),
+    });
+  }
+
   db.query("SELECT * FROM user WHERE email = ?", [email], (err, result) => {
     if (err) throw err;
     if (result.length == 0) {
